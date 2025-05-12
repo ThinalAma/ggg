@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VNC Viewer</title>
+    <style>
+        body, html { margin: 0; height: 100%; }
+        canvas { display: block; width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <canvas id="vncCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("vncCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // WebSocket connection to the server
+        const socket = new WebSocket("ws://localhost:8765");
+
+        socket.onopen = () => {
+            console.log("Connected to WebSocket server.");
+        };
+
+        socket.onmessage = (event) => {
+            const imgData = event.data;
+            const img = new Image();
+
+            // When the image is loaded, draw it on the canvas
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+            };
+
+            // Set the image source to the base64 data received from the server
+            img.src = 'data:image/jpeg;base64,' + imgData;
+        };
+
+        socket.onerror = (error) => {
+            console.log("WebSocket error:", error);
+        };
+
+        socket.onclose = () => {
+            console.log("Connection closed.");
+        };
+    </script>
+</body>
+</html>
